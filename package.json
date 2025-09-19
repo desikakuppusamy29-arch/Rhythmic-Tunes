@@ -1,65 +1,75 @@
 {
-  "name": "@humanwhocodes/module-importer",
-  "version": "1.0.1",
-  "description": "Universal module importer for Node.js",
-  "main": "src/module-importer.cjs",
-  "module": "src/module-importer.js",
-  "type": "module",
-  "types": "dist/module-importer.d.ts",
-  "exports": {
-    "require": "./src/module-importer.cjs",
-    "import": "./src/module-importer.js"
-  },
-  "files": [
-    "dist",
-    "src"
+  "name": "@jridgewell/trace-mapping",
+  "version": "0.3.20",
+  "description": "Trace the original position through a source map",
+  "keywords": [
+    "source",
+    "map"
   ],
-  "publishConfig": {
-    "access": "public"
+  "main": "dist/trace-mapping.umd.js",
+  "module": "dist/trace-mapping.mjs",
+  "types": "dist/types/trace-mapping.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": [
+      {
+        "types": "./dist/types/trace-mapping.d.ts",
+        "browser": "./dist/trace-mapping.umd.js",
+        "require": "./dist/trace-mapping.umd.js",
+        "import": "./dist/trace-mapping.mjs"
+      },
+      "./dist/trace-mapping.umd.js"
+    ],
+    "./package.json": "./package.json"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ]
-  },
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/nzakas"
-  },
-  "scripts": {
-    "build": "rollup -c && tsc",
-    "prepare": "npm run build",
-    "lint": "eslint src/ tests/",
-    "test:unit": "c8 mocha tests/module-importer.test.js",
-    "test:build": "node tests/pkg.test.cjs && node tests/pkg.test.mjs",
-    "test": "npm run test:unit && npm run test:build"
-  },
+  "author": "Justin Ridgewell <justin@ridgewell.name>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/humanwhocodes/module-importer.git"
+    "url": "git+https://github.com/jridgewell/trace-mapping.git"
   },
-  "keywords": [
-    "modules",
-    "esm",
-    "commonjs"
-  ],
-  "engines": {
-    "node": ">=12.22"
+  "license": "MIT",
+  "scripts": {
+    "benchmark": "run-s build:rollup benchmark:*",
+    "benchmark:install": "cd benchmark && npm install",
+    "benchmark:only": "node --expose-gc benchmark/index.mjs",
+    "build": "run-s -n build:*",
+    "build:rollup": "rollup -c rollup.config.js",
+    "build:ts": "tsc --project tsconfig.build.json",
+    "lint": "run-s -n lint:*",
+    "lint:prettier": "npm run test:lint:prettier -- --write",
+    "lint:ts": "npm run test:lint:ts -- --fix",
+    "prebuild": "rm -rf dist",
+    "prepublishOnly": "npm run preversion",
+    "preversion": "run-s test build",
+    "test": "run-s -n test:lint test:only",
+    "test:debug": "ava debug",
+    "test:lint": "run-s -n test:lint:*",
+    "test:lint:prettier": "prettier --check '{src,test}/**/*.ts' '**/*.md'",
+    "test:lint:ts": "eslint '{src,test}/**/*.ts'",
+    "test:only": "c8 ava",
+    "test:watch": "ava --watch"
   },
-  "author": "Nicholas C. Zaks",
-  "license": "Apache-2.0",
   "devDependencies": {
-    "@types/node": "^18.7.6",
+    "@rollup/plugin-typescript": "8.5.0",
+    "@typescript-eslint/eslint-plugin": "5.39.0",
+    "@typescript-eslint/parser": "5.39.0",
+    "ava": "4.3.3",
+    "benchmark": "2.1.4",
     "c8": "7.12.0",
-    "chai": "4.3.6",
-    "eslint": "8.22.0",
-    "lint-staged": "13.0.3",
-    "mocha": "9.2.2",
-    "rollup": "2.78.0",
-    "typescript": "4.7.4",
-    "yorkie": "2.0.0"
+    "esbuild": "0.15.10",
+    "eslint": "8.25.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-no-only-tests": "3.0.0",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.7.1",
+    "rollup": "2.79.1",
+    "tsx": "3.10.1",
+    "typescript": "4.8.4"
+  },
+  "dependencies": {
+    "@jridgewell/resolve-uri": "^3.1.0",
+    "@jridgewell/sourcemap-codec": "^1.4.14"
   }
 }
