@@ -1,38 +1,80 @@
-# has-proto <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+# ModuleImporter
 
-[![github actions][actions-image]][actions-url]
-[![coverage][codecov-image]][codecov-url]
-[![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
+by [Nicholas C. Zakas](https://humanwhocodes.com)
 
-[![npm badge][npm-badge-png]][package-url]
+If you find this useful, please consider supporting my work with a [donation](https://humanwhocodes.com/donate).
 
-Does this environment have the ability to set the [[Prototype]] of an object on creation with `__proto__`?
+## Description
 
-## Example
+A utility for seamlessly importing modules in Node.js regardless if they are CommonJS or ESM format. Under the hood, this uses `import()` and relies on Node.js's CommonJS compatibility to work correctly. This ensures that the correct locations and formats are used for CommonJS so you can call one method and not worry about any compatibility issues.
 
-```js
-var hasProto = require('has-proto');
-var assert = require('assert');
+The problem with the default `import()` is that it always resolves relative to the file location in which it is called. If you want to resolve from a different location, you need to jump through a few hoops to achieve that. This package makes it easy to both resolve and import modules from any directory.
 
-assert.equal(typeof hasProto(), 'boolean');
+## Usage
+
+### Node.js
+
+Install using [npm][npm] or [yarn][yarn]:
+
+```
+npm install @humanwhocodes/module-importer
+
+# or
+
+yarn add @humanwhocodes/module-importer
 ```
 
-## Tests
-Simply clone the repo, `npm install`, and run `npm test`
+Import into your Node.js project:
 
-[package-url]: https://npmjs.org/package/has-proto
-[npm-version-svg]: https://versionbadg.es/inspect-js/has-proto.svg
-[deps-svg]: https://david-dm.org/inspect-js/has-proto.svg
-[deps-url]: https://david-dm.org/inspect-js/has-proto
-[dev-deps-svg]: https://david-dm.org/inspect-js/has-proto/dev-status.svg
-[dev-deps-url]: https://david-dm.org/inspect-js/has-proto#info=devDependencies
-[npm-badge-png]: https://nodei.co/npm/has-proto.png?downloads=true&stars=true
-[license-image]: https://img.shields.io/npm/l/has-proto.svg
-[license-url]: LICENSE
-[downloads-image]: https://img.shields.io/npm/dm/has-proto.svg
-[downloads-url]: https://npm-stat.com/charts.html?package=has-proto
-[codecov-image]: https://codecov.io/gh/inspect-js/has-proto/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/inspect-js/has-proto/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/has-proto
-[actions-url]: https://github.com/inspect-js/has-proto/actions
+```js
+// CommonJS
+const { ModuleImporter } = require("@humanwhocodes/module-importer");
+
+// ESM
+import { ModuleImporter } from "@humanwhocodes/module-importer";
+```
+
+### Bun
+
+Install using this command:
+
+```
+bun add @humanwhocodes/module-importer
+```
+
+Import into your Bun project:
+
+```js
+import { ModuleImporter } from "@humanwhocodes/module-importer";
+```
+
+## API
+
+After importing, create a new instance of `ModuleImporter` to start emitting events:
+
+```js
+// cwd can be omitted to use process.cwd()
+const importer = new ModuleImporter(cwd);
+
+// you can resolve the location of any package
+const location = importer.resolve("./some-file.cjs");
+
+// you can also import directly
+const module = importer.import("./some-file.cjs");
+```
+
+For both `resolve()` and `import()`, you can pass in package names and filenames.
+
+## Developer Setup
+
+1. Fork the repository
+2. Clone your fork
+3. Run `npm install` to setup dependencies
+4. Run `npm test` to run tests
+
+## License
+
+Apache 2.0
+
+[npm]: https://npmjs.com/
+[yarn]: https://yarnpkg.com/
